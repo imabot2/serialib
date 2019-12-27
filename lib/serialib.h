@@ -23,11 +23,26 @@ This is a licence-free software, it can be used by anyone who try to build a bet
 
 // Used for TimeOut operations
 #include <sys/time.h>
-// Accessing to the serial port under Windows
-#include <windows.h>
+// Include for windows
+#if defined (_WIN32) || defined (_WIN64)
+    // Accessing to the serial port under Windows
+    #include <windows.h>
+#endif
 
-// For debugging
-#include <stdio.h>
+// Include for Linux
+#ifdef __linux__
+    #include <stdlib.h>
+    #include <sys/types.h>
+    #include <sys/shm.h>
+    #include <termios.h>
+    #include <string.h>
+    #include <iostream>
+    // File control definitions
+    #include <fcntl.h>
+    #include <unistd.h>
+    #include <sys/ioctl.h>
+#endif
+
 
 // To avoid unused parameters
 #define UNUSED(x) (void)(x)
@@ -162,12 +177,18 @@ private:
     bool            currentStateDTR;
 
 
+
+
+
+#if defined (_WIN32) || defined( _WIN64)
     // Handle on serial device
     HANDLE          hSerial;
-
     // For setting serial port timeouts
     COMMTIMEOUTS    timeouts;
-
+#endif
+#ifdef __linux__
+    int             fd;
+#endif
 
 };
 

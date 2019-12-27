@@ -257,8 +257,8 @@ char serialib::writeString(const char *receivedString)
     return 1;
 #endif
 #ifdef __linux__
-    int Lenght=strlen(String);                                          // Lenght of the string
-    if (write(fd,String,Lenght)!=Lenght)                                // Write the string
+    int Lenght=strlen(receivedString);                                          // Lenght of the string
+    if (write(fd,receivedString,Lenght)!=Lenght)                                // Write the string
         return -1;                                                      // error while writing
     return 1;                                                           // Write operation successfull
 #endif
@@ -300,21 +300,21 @@ char serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
 /*!
      \brief Wait for a byte from the serial device and return the data read
      \param pByte : data read on the serial device
-     \param TimeOut_ms : delay of timeout before giving up the reading
+     \param timeOut_ms : delay of timeout before giving up the reading
             If set to zero, timeout is disable (Optional)
      \return 1 success
      \return 0 Timeout reached
      \return -1 error while setting the Timeout
      \return -2 error while reading the byte
   */
-char serialib::readChar(char *pByte,unsigned int TimeOut_ms)
+char serialib::readChar(char *pByte,unsigned int timeOut_ms)
 {
 #if defined (_WIN32) || defined(_WIN64)
     // Number of bytes read
     DWORD dwBytesRead = 0;
 
     // Set the TimeOut
-    timeouts.ReadTotalTimeoutConstant=TimeOut_ms;
+    timeouts.ReadTotalTimeoutConstant=timeOut_ms;
 
     // Write the parameters, return -1 if an error occured
     if(!SetCommTimeouts(hSerial, &timeouts)) return -1;
@@ -329,9 +329,9 @@ char serialib::readChar(char *pByte,unsigned int TimeOut_ms)
     return 1;
 #endif
 #ifdef __linux__
-    TimeOut         Timer;                                              // Timer used for timeout
-    Timer.InitTimer();                                                  // Initialise the timer
-    while (Timer.ElapsedTime_ms()<TimeOut_ms || TimeOut_ms==0)          // While Timeout is not reached
+    timeOut         timer;                                              // Timer used for timeout
+    timer.initTimer();                                                  // Initialise the timer
+    while (timer.elapsedTime_ms()<timeOut_ms || timeOut_ms==0)          // While Timeout is not reached
     {
         switch (read(fd,pByte,1)) {                                     // Try to read a byte on the device
         case 1  : return 1;                                             // Read successfull
@@ -396,7 +396,7 @@ int serialib::readStringNoTimeOut(char *receivedString,char FinalChar,unsigned i
      \param receivedString : string read on the serial device
      \param FinalChar : final char of the string
      \param MaxNbBytes : maximum allowed number of bytes read
-     \param TimeOut_ms : delay of timeout before giving up the reading (optional)
+     \param timeOut_ms : delay of timeout before giving up the reading (optional)
      \return  >0 success, return the number of bytes read
      \return  0 timeout is reached
      \return -1 error while setting the Timeout
@@ -468,13 +468,13 @@ int serialib::readString(char *receivedString,char finalChar,unsigned int maxNbB
      \brief Read an array of bytes from the serial device (with timeout)
      \param Buffer : array of bytes read from the serial device
      \param MaxNbBytes : maximum allowed number of bytes read
-     \param TimeOut_ms : delay of timeout before giving up the reading
+     \param timeOut_ms : delay of timeout before giving up the reading
      \return >=0 return the number of bytes read before timeout or
                 requested data is completed
      \return -1 error while setting the Timeout
      \return -2 error while reading the byte
   */
-int serialib::readBytes (void *Buffer,unsigned int MaxNbBytes,unsigned int TimeOut_ms, unsigned int SleepDuration_us)
+int serialib::readBytes (void *Buffer,unsigned int MaxNbBytes,unsigned int timeOut_ms, unsigned int SleepDuration_us)
 {
 #if defined (_WIN32) || defined(_WIN64)
     // Avoid warning while compiling
@@ -484,7 +484,7 @@ int serialib::readBytes (void *Buffer,unsigned int MaxNbBytes,unsigned int TimeO
     DWORD dwBytesRead = 0;
 
     // Set the TimeOut
-    timeouts.ReadTotalTimeoutConstant=(DWORD)TimeOut_ms;
+    timeouts.ReadTotalTimeoutConstant=(DWORD)timeOut_ms;
 
     // Write the parameters and return -1 if an error occrured
     if(!SetCommTimeouts(hSerial, &timeouts)) return -1;
@@ -497,10 +497,10 @@ int serialib::readBytes (void *Buffer,unsigned int MaxNbBytes,unsigned int TimeO
     return dwBytesRead;
 #endif
 #ifdef __linux__
-    TimeOut          Timer;                                             // Timer used for timeout
-    Timer.InitTimer();                                                  // Initialise the timer
+    timeOut          timer;                                             // Timer used for timeout
+    timer.initTimer();                                                  // Initialise the timer
     unsigned int     NbByteRead=0;
-    while (Timer.ElapsedTime_ms()<TimeOut_ms || TimeOut_ms==0)          // While Timeout is not reached
+    while (timer.elapsedTime_ms()<timeOut_ms || timeOut_ms==0)          // While Timeout is not reached
     {
         unsigned char* Ptr=(unsigned char*)Buffer+NbByteRead;           // Compute the position of the current byte
         int Ret=read(fd,(void*)Ptr,MaxNbBytes-NbByteRead);              // Try to read a byte on the device
@@ -541,6 +541,7 @@ char serialib::flushReceiver()
 #endif
 #ifdef __linux__
     tcflush(fd,TCIFLUSH);
+    return true;
 #endif
 }
 
@@ -563,9 +564,11 @@ int serialib::available()
     return commStatus.cbInQue;
 #endif
 #ifdef __linux__
-    int Nbytes=0;
-    ioctl(fd, FIONREAD, &Nbytes);
+    int nBytes=0;
+    ioctl(fd, FIONREAD, &nBytes);
+    return nBytes;
 #endif
+
 }
 
 
@@ -610,6 +613,7 @@ bool serialib::setDTR()
     ioctl(fd, TIOCMGET, &status_DTR);
     status_DTR |= TIOCM_DTR;
     ioctl(fd, TIOCMSET, &status_DTR);
+    return true;
 #endif
 }
 
@@ -631,6 +635,7 @@ bool serialib::clearDTR()
     ioctl(fd, TIOCMGET, &status_DTR);
     status_DTR &= ~TIOCM_DTR;
     ioctl(fd, TIOCMSET, &status_DTR);
+    return true;
 #endif
 }
 
@@ -672,6 +677,7 @@ bool serialib::setRTS()
     ioctl(fd, TIOCMGET, &status_RTS);
     status_RTS |= TIOCM_RTS;
     ioctl(fd, TIOCMSET, &status_RTS);
+    return true;
 #endif
 }
 
@@ -695,8 +701,8 @@ bool serialib::clearRTS()
     ioctl(fd, TIOCMGET, &status_RTS);
     status_RTS &= ~TIOCM_RTS;
     ioctl(fd, TIOCMSET, &status_RTS);
+    return true;
 #endif
-
 }
 
 
@@ -729,9 +735,13 @@ bool serialib::isCTS()
   */
 bool serialib::isDSR()
 {
+#if defined (_WIN32) || defined(_WIN64)
     DWORD modemStat;
     GetCommModemStatus(hSerial, &modemStat);
     return modemStat & MS_DSR_ON;
+#endif
+#ifdef __linux__
+#endif
 }
 
 
@@ -746,9 +756,14 @@ bool serialib::isDSR()
   */
 bool serialib::isDCD()
 {
+#if defined (_WIN32) || defined(_WIN64)
     DWORD modemStat;
     GetCommModemStatus(hSerial, &modemStat);
     return modemStat & MS_RLSD_ON;
+#endif
+#ifdef __linux__
+
+#endif
 }
 
 

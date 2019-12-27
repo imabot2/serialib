@@ -10,8 +10,13 @@
 #include "../lib/serialib.h"
 #include <unistd.h>
 
-#define SERIAL_PORT "COM1"
 
+#if defined (_WIN32) || defined(_WIN64)
+    #define SERIAL_PORT "COM1"
+#endif
+#ifdef __linux__
+    #define SERIAL_PORT "/dev/ttyACM0"
+#endif
 
 int main( /*int argc, char *argv[]*/)
 {
@@ -28,15 +33,10 @@ int main( /*int argc, char *argv[]*/)
     if (errorOpening!=1) return errorOpening;
     printf ("Successful connection to %s\n",SERIAL_PORT);
 
-    while (1)
-    {
-
-        printf ("1->%d \t 6->%d \t 8->%d \t 9->%d\n", serial.isDCD(), serial.isDSR(), serial.isCTS(), serial.isRI());
-    }
-
 
     // Wait one second before the device is ready
-    sleep(1);
+    printf ("Wait for the device to be ready\n");
+    sleep(4);
 
     // Display the number bytes received but not read
     printf ("%d bytes in the buffer\n",serial.available());

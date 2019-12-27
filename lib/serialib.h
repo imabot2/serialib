@@ -1,9 +1,9 @@
 /*!
-\file    serial-O-matic.h
+\file    serialib.h
 \brief   Header file of the class serialib. This class is used for communication over a serial device.
 \author  Philippe Lucidarme (University of Angers)
-\version 1.2
-\date    28 avril 2011
+\version 2.0
+\date    december the 27th of 2019
 This Serial library is used to communicate through serial port.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -44,7 +44,7 @@ This is a licence-free software, it can be used by anyone who try to build a bet
 #endif
 
 
-// To avoid unused parameters
+/*! To avoid unused parameters */
 #define UNUSED(x) (void)(x)
 
 
@@ -89,7 +89,7 @@ public:
     char    writeChar   (char);
 
     // Read a char (with timeout)
-    char    readChar    (char *pByte,const unsigned int TimeOut_ms=0);
+    char    readChar    (char *pByte,const unsigned int timeOut_ms=0);
 
 
 
@@ -102,10 +102,10 @@ public:
     char    writeString (const char *String);
 
     // Read a string (with timeout)
-    int     readString  (   char *String,
-                            char FinalChar,
-                            unsigned int MaxNbBytes,
-                            const unsigned int TimeOut_ms=0);
+    int     readString  (   char *receivedString,
+                            char finalChar,
+                            unsigned int maxNbBytes,
+                            const unsigned int timeOut_ms=0);
 
 
 
@@ -117,7 +117,7 @@ public:
     char    writeBytes  (const void *Buffer, const unsigned int NbBytes);
 
     // Read an array of byte (with timeout)
-    int     readBytes   (void *Buffer,unsigned int MaxNbBytes,const unsigned int TimeOut_ms=0, unsigned int SleepDuration_us=100);
+    int     readBytes   (void *buffer,unsigned int maxNbBytes,const unsigned int timeOut_ms=0, unsigned int sleepDuration_us=100);
 
 
 
@@ -170,7 +170,7 @@ public:
 
 private:
     // Read a string (no timeout)
-    int     readStringNoTimeOut  (char *String,char FinalChar,unsigned int MaxNbBytes);
+    int             readStringNoTimeOut  (char *String,char FinalChar,unsigned int MaxNbBytes);
 
     // Current DTR and RTS state (can't be read on WIndows)
     bool            currentStateRTS;

@@ -23,6 +23,11 @@
 #endif
 
 
+/*!
+ * \brief main  Simple example that send ASCII characters to the serial device
+ * \return      0 : success
+ *              <0 : an error occured
+ */
 int main( /*int argc, char *argv[]*/)
 {
     // Serial object
@@ -37,7 +42,8 @@ int main( /*int argc, char *argv[]*/)
     if (errorOpening!=1) return errorOpening;
     printf ("Successful connection to %s\n",SERIAL_PORT);
 
-    // Display ASCII characters form 32 to 128
+
+    // Display ASCII characters (from 32 to 128)
     for (int c=32;c<128;c++)
     {
         serial.writeChar(c);

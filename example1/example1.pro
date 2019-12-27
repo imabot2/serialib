@@ -4,19 +4,19 @@
 #
 #-------------------------------------------------
 
-QT          += core
-QT          -= network
-QT          -= gui
+QT          +=  core
+QT          -=  network
+QT          -=  gui
 
 TARGET      = 	project
 CONFIG      += 	console
 CONFIG      -= 	app_bundle
 
-TEMPLATE    = app
+TEMPLATE    =   app
 
 
-SOURCES     += main.cpp \
-                serialib_win.cpp
+SOURCES     +=  main.cpp \
+                ../lib/serialib.cpp
 
-HEADERS +=  serialib_win.h
+HEADERS     +=  ../lib/serialib.h
 

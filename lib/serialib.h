@@ -146,9 +146,10 @@ public:
     // Get DSR status (Data Set Ready, pin 9)
     bool    isDSR();
 
-    //
+    // Get RTS status (Request To Send, pin 7)
     bool    isRTS();
 
+    // Get CTR status (Data Terminal Ready, pin 4)
     bool    isDTR();
 
 
@@ -156,7 +157,9 @@ private:
     // Read a string (no timeout)
     int     readStringNoTimeOut  (char *String,char FinalChar,unsigned int MaxNbBytes);
 
-
+    // Current DTR and RTS state (can't be read on WIndows)
+    bool            currentStateRTS;
+    bool            currentStateDTR;
 
 
     // Handle on serial device

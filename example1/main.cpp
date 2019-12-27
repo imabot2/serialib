@@ -7,10 +7,8 @@
 
 
 // Serial library
-#include "serialib_win.h"
-#include <stdio.h>
+#include "../lib/serialib.h"
 #include <unistd.h>
-
 
 #define SERIAL_PORT "COM1"
 
@@ -30,8 +28,6 @@ int main( /*int argc, char *argv[]*/)
     if (errorOpening!=1) return errorOpening;
     printf ("Successful connection to %s\n",SERIAL_PORT);
 
-    serial.RTS(true);
-    serial.DTR(false);
     while (1)
     {
 
@@ -40,7 +36,7 @@ int main( /*int argc, char *argv[]*/)
 
 
     // Wait one second before the device is ready
-    sleep(1);    
+    sleep(1);
 
     // Display the number bytes received but not read
     printf ("%d bytes in the buffer\n",serial.available());

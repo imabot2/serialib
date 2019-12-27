@@ -22,6 +22,7 @@ build*/
 
 # Project configuration settings like predefined Macros
 *.config
+*.pro.user
 
 # Qt Creator settings
 *.creator

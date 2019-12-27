@@ -17,6 +17,8 @@
 
 # Include directories
 *.includes
+bin/
+build*/
 
 # Project configuration settings like predefined Macros
 *.config

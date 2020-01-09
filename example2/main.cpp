@@ -13,6 +13,7 @@
 // Serial library
 #include "../lib/serialib.h"
 #include <unistd.h>
+#include <stdio.h>
 
 
 #if defined (_WIN32) || defined(_WIN64)

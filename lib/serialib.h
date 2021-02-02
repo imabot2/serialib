@@ -30,7 +30,7 @@ This is a licence-free software, it can be used by anyone who try to build a bet
 #endif
 
 // Include for Linux
-#ifdef __linux__
+#if defined (__linux__) || defined(__APPLE__)
     #include <stdlib.h>
     #include <sys/types.h>
     #include <sys/shm.h>
@@ -186,7 +186,7 @@ private:
     // For setting serial port timeouts
     COMMTIMEOUTS    timeouts;
 #endif
-#ifdef __linux__
+#if defined (__linux__) || defined(__APPLE__)
     int             fd;
 #endif
 

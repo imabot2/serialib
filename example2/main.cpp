@@ -19,7 +19,7 @@
 #if defined (_WIN32) || defined(_WIN64)
     #define SERIAL_PORT "COM1"
 #endif
-#ifdef __linux__
+#if defined (__linux__) || defined(__APPLE__)
     #define SERIAL_PORT "/dev/ttyS0"
 #endif
 

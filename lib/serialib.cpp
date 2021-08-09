@@ -93,7 +93,7 @@ serialib::~serialib()
                 - SERIAL_DATABITS_6 (6)
                 - SERIAL_DATABITS_7 (7)
                 - SERIAL_DATABITS_8 (8)
-                - SERIAL_DATABITS_16 (16)
+                - SERIAL_DATABITS_16 (16) (not supported on Unix)
 
      \param Parity: Parity type
 
@@ -101,13 +101,13 @@ serialib::~serialib()
                 - SERIAL_PARITY_NONE (N)
                 - SERIAL_PARITY_EVEN (E)
                 - SERIAL_PARITY_ODD (O)
-                - SERIAL_PARITY_MARK (MARK)
-                - SERIAL_PARITY_SPACE (SPACE)
+                - SERIAL_PARITY_MARK (MARK) (not supported on Unix)
+                - SERIAL_PARITY_SPACE (SPACE) (not supported on Unix)
     \param Stopbit: Number of stop bits
 
             \n Supported values:
                 - SERIAL_STOPBITS_1 (1)
-                - SERIAL_STOPBITS_1_5 (1.5)
+                - SERIAL_STOPBITS_1_5 (1.5) (not supported on Unix)
                 - SERIAL_STOPBITS_2 (2)
 
      \return 1 success

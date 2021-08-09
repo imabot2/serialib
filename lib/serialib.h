@@ -47,6 +47,36 @@ This is a licence-free software, it can be used by anyone who try to build a bet
 /*! To avoid unused parameters */
 #define UNUSED(x) (void)(x)
 
+/**
+ * number of serial data bits
+ */
+enum SerialDataBits {
+    SERIAL_DATABITS_5, /**< 5 databits */
+    SERIAL_DATABITS_6, /**< 6 databits */
+    SERIAL_DATABITS_7, /**< 7 databits */
+    SERIAL_DATABITS_8,  /**< 8 databits */
+    SERIAL_DATABITS_16,  /**< 16 databits */
+};
+
+/**
+ * number of serial stop bits
+ */
+enum SerialStopBits {
+    SERIAL_STOPBITS_1, /**< 1 stop bit */
+    SERIAL_STOPBITS_1_5, /**< 1.5 stop bits */
+    SERIAL_STOPBITS_2, /**< 2 stop bits */
+};
+
+/**
+ * type of serial parity bits
+ */
+enum SerialParity {
+    SERIAL_PARITY_NONE, /**< no parity bit */
+    SERIAL_PARITY_EVEN, /**< even parity bit */
+    SERIAL_PARITY_ODD, /**< odd parity bit */
+    SERIAL_PARITY_MARK, /**< mark parity */
+    SERIAL_PARITY_SPACE /**< space bit */
+};
 
 /*!  \class     serialib
      \brief     This class is used for communication over a serial device.
@@ -73,7 +103,10 @@ public:
 
 
     // Open a device
-    char    openDevice (const char *Device,const unsigned int Bauds);
+    char openDevice(const char *Device, const unsigned int Bauds,
+                    SerialDataBits Databits = SERIAL_DATABITS_8,
+                    SerialParity Parity = SERIAL_PARITY_NONE,
+                    SerialStopBits Stopbits = SERIAL_STOPBITS_1);
 
     // Close the current device
     void    closeDevice();

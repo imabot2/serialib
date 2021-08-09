@@ -251,12 +251,38 @@ char serialib::openDevice(const char *Device, const unsigned int Bauds,
     case 57600 :    Speed=B57600; break;
     case 115200 :   Speed=B115200; break;
     default : return -4;
-    }    
+    }
+    int databits_flag = 0;
+    switch(Databits) {
+        case SERIAL_DATABITS_5: databits_flag = CS5; break;
+        case SERIAL_DATABITS_6: databits_flag = CS6; break;
+        case SERIAL_DATABITS_7: databits_flag = CS7; break;
+        case SERIAL_DATABITS_8: databits_flag = CS8; break;
+        //16 bits and everything else not supported
+        default: return -7;
+    }
+    int stopbits_flag = 0;
+    switch(Stopbits) {
+        case SERIAL_STOPBITS_1: stopbits_flag = 0; break;
+        case SERIAL_STOPBITS_2: stopbits_flag = CSTOPB; break;
+        //1.5 stopbits and everything else not supported
+        default: return -8;
+    }
+    int parity_flag = 0;
+    switch(Parity) {
+        case SERIAL_PARITY_NONE: parity_flag = 0; break;
+        case SERIAL_PARITY_EVEN: parity_flag = PARENB; break;
+        case SERIAL_PARITY_ODD: parity_flag = (PARENB | PARODD); break;
+        //mark and space parity not supported
+        default: return -9;
+    }
+
     // Set the baud rate
     cfsetispeed(&options, Speed);
     cfsetospeed(&options, Speed);
-    // Configure the device : 8 bits, no parity, no control
-    options.c_cflag |= ( CLOCAL | CREAD |  CS8);
+    // Configure the device : data bits, stop bits, parity, no control flow
+    // Ignore modem control lines (CLOCAL) and Enable receiver (CREAD)
+    options.c_cflag |= ( CLOCAL | CREAD | databits_flag | parity_flag | stopbits_flag);
     options.c_iflag |= ( IGNPAR | IGNBRK );
     // Timer unused
     options.c_cc[VTIME]=0;

@@ -14,7 +14,7 @@ var classserialib =
     [ "isDTR", "classserialib.html#a4ec78286be81602bf1df44a4eb8372a8", null ],
     [ "isRI", "classserialib.html#a605d8a8015fadb5db5521350aefe084e", null ],
     [ "isRTS", "classserialib.html#ab2b121af07fb732f82668f6a14e93cfb", null ],
-    [ "openDevice", "classserialib.html#a5c2f95793e0fcd7fa6615682e8f58f16", null ],
+    [ "openDevice", "classserialib.html#afcef685b74a3db58dc2d1898bb34aaca", null ],
     [ "readBytes", "classserialib.html#ab05e51ff3bc47c02d7d000d58b45a961", null ],
     [ "readChar", "classserialib.html#a6c78b8a11ae7b8af57eea3dbc7fa237b", null ],
     [ "readString", "classserialib.html#ab155c84352ddefe1304d391c19497ac1", null ],

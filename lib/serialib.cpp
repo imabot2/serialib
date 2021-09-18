@@ -86,6 +86,29 @@ serialib::~serialib()
                         - 38400
                         - 57600
                         - 115200
+     \param Databits : Number of data bits in one UART transmission.
+
+            \n Supported values: \n
+                - SERIAL_DATABITS_5 (5)
+                - SERIAL_DATABITS_6 (6)
+                - SERIAL_DATABITS_7 (7)
+                - SERIAL_DATABITS_8 (8)
+                - SERIAL_DATABITS_16 (16) (not supported on Unix)
+
+     \param Parity: Parity type
+
+            \n Supported values: \n
+                - SERIAL_PARITY_NONE (N)
+                - SERIAL_PARITY_EVEN (E)
+                - SERIAL_PARITY_ODD (O)
+                - SERIAL_PARITY_MARK (MARK) (not supported on Unix)
+                - SERIAL_PARITY_SPACE (SPACE) (not supported on Unix)
+    \param Stopbit: Number of stop bits
+
+            \n Supported values:
+                - SERIAL_STOPBITS_1 (1)
+                - SERIAL_STOPBITS_1_5 (1.5) (not supported on Unix)
+                - SERIAL_STOPBITS_2 (2)
 
      \return 1 success
      \return -1 device not found
@@ -94,12 +117,17 @@ serialib::~serialib()
      \return -4 Speed (Bauds) not recognized
      \return -5 error while writing port parameters
      \return -6 error while writing timeout parameters
+     \return -7 Databits not recognized
+     \return -8 Stopbits not recognized
+     \return -9 Parity not recognized
   */
-char serialib::openDevice(const char *Device,const unsigned int Bauds)
-{
+char serialib::openDevice(const char *Device, const unsigned int Bauds,
+                          SerialDataBits Databits,
+                          SerialParity Parity,
+                          SerialStopBits Stopbits) {
 #if defined (_WIN32) || defined( _WIN64)
     // Open serial port
-    hSerial = CreateFileA(Device,GENERIC_READ | GENERIC_WRITE,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+    hSerial = CreateFileA(Device,GENERIC_READ | GENERIC_WRITE,0,0,OPEN_EXISTING,/*FILE_ATTRIBUTE_NORMAL*/0,0);
     if(hSerial==INVALID_HANDLE_VALUE) {
         if(GetLastError()==ERROR_FILE_NOT_FOUND)
             return -1; // Device not found
@@ -137,12 +165,38 @@ char serialib::openDevice(const char *Device,const unsigned int Bauds)
     case 256000 :   dcbSerialParams.BaudRate=CBR_256000; break;
     default : return -4;
     }
-    // 8 bit data
-    dcbSerialParams.ByteSize=8;
-    // One stop bit
-    dcbSerialParams.StopBits=ONESTOPBIT;
-    // No parity
-    dcbSerialParams.Parity=NOPARITY;
+    //select data size
+    BYTE bytesize = 0;
+    switch(Databits) {
+        case SERIAL_DATABITS_5: bytesize = 5; break;
+        case SERIAL_DATABITS_6: bytesize = 6; break;
+        case SERIAL_DATABITS_7: bytesize = 7; break;
+        case SERIAL_DATABITS_8: bytesize = 8; break;
+        case SERIAL_DATABITS_16: bytesize = 16; break;
+        default: return -7;
+    }
+    BYTE stopBits = 0;
+    switch(Stopbits) {
+        case SERIAL_STOPBITS_1: stopBits = ONESTOPBIT; break;
+        case SERIAL_STOPBITS_1_5: stopBits = ONE5STOPBITS; break;
+        case SERIAL_STOPBITS_2: stopBits = TWOSTOPBITS; break;
+        default: return -8;
+    }
+    BYTE parity = 0;
+    switch(Parity) {
+        case SERIAL_PARITY_NONE: parity = NOPARITY; break;
+        case SERIAL_PARITY_EVEN: parity = EVENPARITY; break;
+        case SERIAL_PARITY_ODD: parity = ODDPARITY; break;
+        case SERIAL_PARITY_MARK: parity = MARKPARITY; break;
+        case SERIAL_PARITY_SPACE: parity = SPACEPARITY; break;
+        default: return -9;
+    }
+    // configure byte size
+    dcbSerialParams.ByteSize = bytesize;
+    // configure stop bits
+    dcbSerialParams.StopBits = stopBits;
+    // configure parity
+    dcbSerialParams.Parity = parity;
 
     // Write the parameters
     if(!SetCommState(hSerial, &dcbSerialParams)) return -5;
@@ -197,12 +251,38 @@ char serialib::openDevice(const char *Device,const unsigned int Bauds)
     case 57600 :    Speed=B57600; break;
     case 115200 :   Speed=B115200; break;
     default : return -4;
-    }    
+    }
+    int databits_flag = 0;
+    switch(Databits) {
+        case SERIAL_DATABITS_5: databits_flag = CS5; break;
+        case SERIAL_DATABITS_6: databits_flag = CS6; break;
+        case SERIAL_DATABITS_7: databits_flag = CS7; break;
+        case SERIAL_DATABITS_8: databits_flag = CS8; break;
+        //16 bits and everything else not supported
+        default: return -7;
+    }
+    int stopbits_flag = 0;
+    switch(Stopbits) {
+        case SERIAL_STOPBITS_1: stopbits_flag = 0; break;
+        case SERIAL_STOPBITS_2: stopbits_flag = CSTOPB; break;
+        //1.5 stopbits and everything else not supported
+        default: return -8;
+    }
+    int parity_flag = 0;
+    switch(Parity) {
+        case SERIAL_PARITY_NONE: parity_flag = 0; break;
+        case SERIAL_PARITY_EVEN: parity_flag = PARENB; break;
+        case SERIAL_PARITY_ODD: parity_flag = (PARENB | PARODD); break;
+        //mark and space parity not supported
+        default: return -9;
+    }
+
     // Set the baud rate
     cfsetispeed(&options, Speed);
     cfsetospeed(&options, Speed);
-    // Configure the device : 8 bits, no parity, no control
-    options.c_cflag |= ( CLOCAL | CREAD |  CS8);
+    // Configure the device : data bits, stop bits, parity, no control flow
+    // Ignore modem control lines (CLOCAL) and Enable receiver (CREAD)
+    options.c_cflag |= ( CLOCAL | CREAD | databits_flag | parity_flag | stopbits_flag);
     options.c_iflag |= ( IGNPAR | IGNBRK );
     // Timer unused
     options.c_cc[VTIME]=0;

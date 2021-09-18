@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timeout',['timeOut',['../classtime_out.html',1,'timeOut'],['../classtime_out.html#a2cffa89f7b90e4501e07e8cb7ccb3117',1,'timeOut::timeOut()']]]
+  ['unused_41',['UNUSED',['../serialib_8h.html#a86d500a34c624c2cae56bc25a31b12f3',1,'serialib.h']]]
 ];

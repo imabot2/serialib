@@ -116,6 +116,9 @@ public:
                     SerialParity Parity = SERIAL_PARITY_NONE,
                     SerialStopBits Stopbits = SERIAL_STOPBITS_1);
 
+    // Check device opening state
+    bool isDeviceOpen();
+
     // Close the current device
     void    closeDevice();
 

@@ -317,9 +317,11 @@ void serialib::closeDevice()
 {
 #if defined (_WIN32) || defined( _WIN64)
     CloseHandle(hSerial);
+    hSerial = INVALID_HANDLE_VALUE;
 #endif
 #if defined (__linux__) || defined(__APPLE__)
     close (fd);
+    fd = -1;
 #endif
 }
 

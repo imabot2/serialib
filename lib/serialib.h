@@ -19,12 +19,14 @@ This is a licence-free software, it can be used by anyone who try to build a bet
 #ifndef SERIALIB_H
 #define SERIALIB_H
 
-
-
-// Used for TimeOut operations
-#include <sys/time.h>
 // Include for windows
 #if defined (_WIN32) || defined (_WIN64)
+#if defined(__CYGWIN__) || defined(__GNUC__)
+    // sys/time.h does not exist on "actual" Windows
+    #include <sys/time.h>
+#else
+    #define NO_POSIX_TIME
+#endif
     // Accessing to the serial port under Windows
     #include <windows.h>
 #endif
@@ -245,8 +247,14 @@ public:
     unsigned long int   elapsedTime_ms();
 
 private:
+#if defined (NO_POSIX_TIME)
+    // Used to store the previous time (for computing timeout)
+    LONGLONG       counterFrequency;
+    LONGLONG       previousTime;
+#else
     // Used to store the previous time (for computing timeout)
     struct timeval      previousTime;
+#endif
 };
 
 #endif // serialib_H

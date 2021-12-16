@@ -1002,7 +1002,16 @@ timeOut::timeOut()
 //Initialize the timer
 void timeOut::initTimer()
 {
+#if defined (NO_POSIX_TIME)
+    LARGE_INTEGER tmp;
+    QueryPerformanceFrequency(&tmp);
+    counterFrequency = tmp.QuadPart;
+    // Used to store the previous time (for computing timeout)
+    QueryPerformanceCounter(&tmp);
+    previousTime = tmp.QuadPart;
+#else
     gettimeofday(&previousTime, NULL);
+#endif
 }
 
 /*!
@@ -1013,6 +1022,21 @@ void timeOut::initTimer()
 //Return the elapsed time since initialization
 unsigned long int timeOut::elapsedTime_ms()
 {
+#if defined (NO_POSIX_TIME)
+    // Current time
+    LARGE_INTEGER CurrentTime;
+    // Number of ticks since last call
+    int sec;
+
+    // Get current time
+    QueryPerformanceCounter(&CurrentTime);
+
+    // Compute the number of ticks elapsed since last call
+    sec=CurrentTime.QuadPart-previousTime;
+
+    // Return the elapsed time in milliseconds
+    return sec/(counterFrequency/1000);
+#else
     // Current time
     struct timeval CurrentTime;
     // Number of seconds and microseconds since last call
@@ -1035,8 +1059,5 @@ unsigned long int timeOut::elapsedTime_ms()
 
     // Return the elapsed time in milliseconds
     return sec*1000+usec/1000;
+#endif
 }
-
-
-
-

@@ -32,6 +32,10 @@ serialib::serialib()
     // Set default value for RTS and DTR (Windows only)
     currentStateRTS=true;
     currentStateDTR=true;
+    hSerial = INVALID_HANDLE_VALUE;
+#endif
+#if defined (__linux__) || defined(__APPLE__)
+    fd = -1;
 #endif
 }
 
@@ -296,6 +300,15 @@ char serialib::openDevice(const char *Device, const unsigned int Bauds,
 
 }
 
+bool serialib::isDeviceOpen()
+{
+#if defined (_WIN32) || defined( _WIN64)
+    return hSerial != INVALID_HANDLE_VALUE;
+#endif
+#if defined (__linux__) || defined(__APPLE__)
+    return fd >= 0;
+#endif
+}
 
 /*!
      \brief Close the connection with the current device
@@ -304,9 +317,11 @@ void serialib::closeDevice()
 {
 #if defined (_WIN32) || defined( _WIN64)
     CloseHandle(hSerial);
+    hSerial = INVALID_HANDLE_VALUE;
 #endif
 #if defined (__linux__) || defined(__APPLE__)
     close (fd);
+    fd = -1;
 #endif
 }
 

@@ -130,10 +130,10 @@ public:
 
 
     // Write a char
-    char    writeChar   (char);
+    int     writeChar   (char);
 
     // Read a char (with timeout)
-    char    readChar    (char *pByte,const unsigned int timeOut_ms=0);
+    int     readChar    (char *pByte,const unsigned int timeOut_ms=0);
 
 
 
@@ -143,7 +143,7 @@ public:
 
 
     // Write a string
-    char    writeString (const char *String);
+    int     writeString (const char *String);
 
     // Read a string (with timeout)
     int     readString  (   char *receivedString,
@@ -158,7 +158,7 @@ public:
 
 
     // Write an array of bytes
-    char    writeBytes  (const void *Buffer, const unsigned int NbBytes);
+    int     writeBytes  (const void *Buffer, const unsigned int NbBytes);
 
     // Read an array of byte (with timeout)
     int     readBytes   (void *buffer,unsigned int maxNbBytes,const unsigned int timeOut_ms=0, unsigned int sleepDuration_us=100);

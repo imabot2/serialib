@@ -339,7 +339,7 @@ void serialib::closeDevice()
      \return 1 success
      \return -1 error while writting data
   */
-char serialib::writeChar(const char Byte)
+int serialib::writeChar(const char Byte)
 {
 #if defined (_WIN32) || defined( _WIN64)
     // Number of bytes written
@@ -371,7 +371,7 @@ char serialib::writeChar(const char Byte)
      \return     1 success
      \return    -1 error while writting data
   */
-char serialib::writeString(const char *receivedString)
+int serialib::writeString(const char *receivedString)
 {
 #if defined (_WIN32) || defined( _WIN64)
     // Number of bytes written
@@ -405,7 +405,7 @@ char serialib::writeString(const char *receivedString)
      \return 1 success
      \return -1 error while writting data
   */
-char serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
+int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
 {
 #if defined (_WIN32) || defined( _WIN64)
     // Number of bytes written
@@ -437,7 +437,7 @@ char serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
      \return -1 error while setting the Timeout
      \return -2 error while reading the byte
   */
-char serialib::readChar(char *pByte,unsigned int timeOut_ms)
+int serialib::readChar(char *pByte,unsigned int timeOut_ms)
 {
 #if defined (_WIN32) || defined(_WIN64)
     // Number of bytes read

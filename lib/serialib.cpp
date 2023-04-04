@@ -584,12 +584,12 @@ int serialib::readStringNoTimeOut(char *receivedString,char finalChar,unsigned i
      \brief Read a string from the serial device (with timeout)
      \param receivedString : string read on the serial device
      \param finalChar : final char of the string
-     \param maxNbBytes : maximum allowed number of bytes read
+     \param maxNbBytes : maximum allowed number of characters read
      \param timeOut_ms : delay of timeout before giving up the reading (optional)
-     \return  >0 success, return the number of bytes read
+     \return  >0 success, return the number of bytes read (including the null character)
      \return  0 timeout is reached
      \return -1 error while setting the Timeout
-     \return -2 error while reading the byte
+     \return -2 error while reading the character
      \return -3 MaxNbBytes is reached
   */
 int serialib::readString(char *receivedString,char finalChar,unsigned int maxNbBytes,unsigned int timeOut_ms)

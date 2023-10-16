@@ -731,6 +731,7 @@ int serialib::readBytes (void *buffer,unsigned int maxNbBytes,unsigned int timeO
 
 /*!
     \brief Empty receiver buffer
+    Note that when using serial over USB on Unix systems, a delay of 20ms may be necessary before calling the flushReceiver function
     \return If the function succeeds, the return value is nonzero.
             If the function fails, the return value is zero.
 */

@@ -833,7 +833,7 @@ bool serialib::clearDTR()
 {
 #if defined (_WIN32) || defined(_WIN64)
     // Clear DTR
-    currentStateDTR=true;
+    currentStateDTR=false;
     return EscapeCommFunction(hSerial,CLRDTR);
 #endif
 #if defined (__linux__) || defined(__APPLE__)
@@ -878,7 +878,7 @@ bool serialib::setRTS()
 {
 #if defined (_WIN32) || defined(_WIN64)
     // Set RTS
-    currentStateRTS=false;
+    currentStateRTS=true;
     return EscapeCommFunction(hSerial,SETRTS);
 #endif
 #if defined (__linux__) || defined(__APPLE__)

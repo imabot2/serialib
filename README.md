@@ -20,7 +20,7 @@ More details on [Lulu's blog](https://lucidar.me/en/serialib/cross-plateform-rs2
 * [How to read and write strings on serial port in C/C++](https://lucidar.me//en/serialib/read-and-write-strings-on-serial-port-in-c-cpp/)
 * [What are the most used baud rates?](https://lucidar.me/en/serialib/what-are-the-most-used-baud-rates/)
 
-## Usefull Tools
+## Useful Tools
 
 * [Most common baud rates table](https://lucidar.me/en/serialib/most-used-baud-rates-table/)
 * [Convert bauds to bits per second](https://lucidar.me/en/serialib/convert-bauds-to-bits-per-second/)

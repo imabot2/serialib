@@ -482,7 +482,7 @@ int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes, unsigne
 int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
 {
     unsigned int NbBytesWritten;
-    return writeBytes(Buffer, NbBytes, &NbBytesWritten)
+    return writeBytes(Buffer, NbBytes, &NbBytesWritten);
 }
 
 /*!

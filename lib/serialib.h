@@ -158,6 +158,7 @@ public:
 
 
     // Write an array of bytes
+    int     writeBytes(const void *Buffer, const unsigned int NbBytes, unsigned int *NbBytesWritten);
     int     writeBytes  (const void *Buffer, const unsigned int NbBytes);
 
     // Read an array of byte (with timeout)

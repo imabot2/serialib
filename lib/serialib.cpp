@@ -460,13 +460,11 @@ int serialib::writeString(const char *receivedString)
      \return 1 success
      \return -1 error while writting data
   */
-int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
+int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes, unsigned int *NbBytesWritten)
 {
 #if defined (_WIN32) || defined( _WIN64)
-    // Number of bytes written
-    DWORD dwBytesWritten;
     // Write data
-    if(!WriteFile(hSerial, Buffer, NbBytes, &dwBytesWritten, NULL))
+    if(!WriteFile(hSerial, Buffer, NbBytes, NbBytesWritten, NULL))
         // Error while writing, return -1
         return -1;
     // Write operation successfull
@@ -474,13 +472,18 @@ int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
 #endif
 #if defined (__linux__) || defined(__APPLE__)
     // Write data
-    if (write (fd,Buffer,NbBytes)!=(ssize_t)NbBytes) return -1;
+    *NbBytesWritten = write (fd,Buffer,NbBytes);
+    if (*NbBytesWritten !=(ssize_t)NbBytes) return -1;
     // Write operation successfull
     return 1;
 #endif
 }
 
-
+int serialib::writeBytes(const void *Buffer, const unsigned int NbBytes)
+{
+    unsigned int NbBytesWritten;
+    return writeBytes(Buffer, NbBytes, &NbBytesWritten);
+}
 
 /*!
      \brief Wait for a byte from the serial device and return the data read

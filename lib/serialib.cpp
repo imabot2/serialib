@@ -439,10 +439,10 @@ int serialib::writeString(const char *receivedString)
     return 1;
 #endif
 #if defined (__linux__) || defined(__APPLE__)
-    // Lenght of the string
-    int Lenght=strlen(receivedString);
+    // Length of the string
+    int Length=strlen(receivedString);
     // Write the string
-    if (write(fd,receivedString,Lenght)!=Lenght) return -1;
+    if (write(fd,receivedString,Length)!=Length) return -1;
     // Write operation successfull
     return 1;
 #endif
